@@ -51,3 +51,7 @@ $ gh_contrib banyan | jq 'reduce .[].count as $item (0; . + $item)'
 ## Limitations
 
 * You can't enable two factor authentication for this user if you want to get the data as logged in :cry:.
+
+## Caveat
+
+* Since it's not an official API, it might be broken anytime :dizzy_face:.
