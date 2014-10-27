@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+
+require 'dotenv'
+Dotenv.load
+
+require 'commander'
+require 'gh_contrib'
+
+Commander.configure do
+  program :version, GhContrib::VERSION
+  program :description, 'Show contributions of GitHub'
+
+  default_command :contributions
+
+  command :contributions do |c|
+    c.syntax      = 'gh_contrib <username>'
+    c.description = 'Show contributions of a user'
+
+    c.option '-d <day|month>', String, 'Group by date'
+
+    c.action do |args, options|
+      options.default d: 'day'
+
+      username = args.shift || abort(c.syntax)
+      agent = GhContrib::Agent.new
+      if ENV['GITHUB_USERNAME'] && ENV['GITHUB_PASSWORD']
+        agent.login(ENV['GITHUB_USERNAME'], ENV['GITHUB_PASSWORD'])
+      end
+
+      if options.d == 'day'
+        puts agent.contributions(username).to_json
+      elsif options.d == 'month'
+        puts agent.contributions_by_month(username).to_json
+      else
+        raise(ArgumentError, "-d option should be passed as 'day' or 'month': #{options.d}")
+      end
+    end
+  end
+end
