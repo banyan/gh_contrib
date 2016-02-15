@@ -11,7 +11,7 @@ module GhContrib
 
     def login(username, password)
       page = @agent.get "#{GITHUB_URL}/login"
-      form = page.forms[1]
+      form = page.forms[0]
       form.field_with(name: 'login').value = username
       form.field_with(name: 'password').value = password
       @agent.submit(form)
